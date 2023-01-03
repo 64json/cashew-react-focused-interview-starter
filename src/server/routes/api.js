@@ -7,15 +7,14 @@ const {db} = require('../adapters/postgres');
 /* GET users listing. */
 router.get("/flashcards", async function (req, res, next) {
   const dataResults = await db.query('select * from flashcards');
-  res.send({users: ["joe2", "bernie", "tulsi", "donald", "bill", dataResults[0]?.definition]});
+  res.send({flashcards: dataResults});
 });
 
 /* POST users listing. */
-router.post("/flashcards", function (req, res, next) {
-  const {username, password} = req.body;
-  console.log('POST "users" route hit');
-  // create a user
-  res.sendStatus(200)
+router.post("/flashcards", async function (req, res, next) {
+  const {term, definition} = req.body;
+  await db.query(`insert into flashcards (term, definition) values ('${term}', '${definition}')`);
+  res.sendStatus(200);
 });
 
 // Begin coding here
